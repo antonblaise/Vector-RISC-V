@@ -1,3 +1,6 @@
+#################################################################
+### RISC-V Vector Extension - Compiler and Simulator commands ###
+#################################################################
 
 if [ -z ${RISCV+x} ]; then export RISCV=$HOME/local/riscv_v; fi
 
