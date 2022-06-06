@@ -43,10 +43,14 @@ printf """
 ${BG_RED}Some parts of the installation requires sudo login. Please type your password whenever prompted.${NC}
 """
 
+# Install riscv-gnu-toolchain
+# Copyright - RISC-V Software Collaboration (https://github.com/riscv-collab)
+ > RVV_path.sh
+printf '\nPATH=$HOME/local/riscv_v/gnu/bin:$PATH' > RVV_path.sh
+source RVV_path.sh
+
 if ! command -v riscv64-unknown-elf-gcc > /dev/null # If RISC-V GNU Toolchain is not found
 then
-    # Install riscv-gnu-toolchain
-    # Copyright - RISC-V Software Collaboration (https://github.com/riscv-collab)
     printf "\n${BG_BLUE}Installing RISC-V GNU Toolchain.${NC}\n"
     sudo apt-get -qq install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev -y
     cd riscv-gnu-toolchain_rvv
@@ -55,7 +59,7 @@ then
     make clean > /dev/null || make clean
     ../configure --prefix=$HOME/local/riscv_v/gnu --enable-multilib
     printf "${WHITE}Installing ... "
-    # make >/dev/null || make
+    make >/dev/null || make
      > RVV_path.sh
     printf '\nPATH=$HOME/local/riscv_v/gnu/bin:$PATH' > RVV_path.sh
     source RVV_path.sh
@@ -68,15 +72,18 @@ then
     else
         printf "\n${BG_GREEN}RISC-V GNU Toolchain install complete.${NC}\n"
     fi
-
 else
-    printf "\n${BG_GREEN}RISC-V GNU Toolchain already installed.${NC}\n"
+    printf "\n${BG_GREEN}RISC-V GNU Toolchain is already installed.${NC}\n"
 fi
+
+# Install spike simulator
+# Copyright - RISC-V Software (https://github.com/riscv-software-src)
+ > RVV_path.sh
+printf '\nPATH=$HOME/local/riscv_v/spike/bin:$PATH' > RVV_path.sh
+source RVV_path.sh
 
 if ! command -v spike > /dev/null # If Spike is not found
 then
-    # Install spike simulator
-    # Copyright - RISC-V Software (https://github.com/riscv-software-src)
     printf "\n${BG_BLUE}Installing Spike RISC-V ISA Simulator.${NC}\n"
     sudo apt-get -qq install device-tree-compiler -y
     cd riscv-isa-sim
@@ -85,8 +92,8 @@ then
     make clean > /dev/null || make clean
     ../configure --prefix=$HOME/local/riscv_v/spike --enable-silent-rules
     printf "${WHITE}Installing ... "
-    # make > /dev/null || make
-    # make install > /dev/null || make install
+    make > /dev/null || make
+    make install > /dev/null || make install
      > RVV_path.sh
     printf '\nPATH=$HOME/local/riscv_v/spike/bin:$PATH' > RVV_path.sh
     source RVV_path.sh
@@ -99,20 +106,26 @@ then
     else
         printf "\n${BG_GREEN}Spike RISC-V ISA Simulator install complete.${NC}\n"
     fi
+else
+    printf "\n${BG_GREEN}Spike RISC-V ISA Simulator is already installed.${NC}\n"
 fi
+
+# Install pk (proxy kernel)
+# Copyright - RISC-V Software (https://github.com/riscv-software-src)
+ > RVV_path.sh
+printf '\nPATH=$HOME/local/riscv_v/pk/riscv64-unknown-elf/bin:$PATH' > RVV_path.sh
+source RVV_path.sh
 
 if ! command -v pk > /dev/null # If proxy kernel (pk) is not found
 then
-    # Install pk (proxy kernel)
-    # Copyright - RISC-V Software (https://github.com/riscv-software-src)
     printf "\n${BG_BLUE}Installing proxy kernel (pk).${NC}\n"
     cd riscv-pk
     mkdir build
     cd build
     make clean > /dev/null || make clean
     ../configure --prefix=$HOME/local/riscv_v/pk --host=riscv64-unknown-elf
-    # make
-    # make install
+    make > /dev/null || make
+    make install > /dev/null || make install
      > RVV_path.sh
     printf '\nPATH=$HOME/local/riscv_v/pk/riscv64-unknown-elf/bin:$PATH' > RVV_path.sh
     source RVV_path.sh
@@ -125,6 +138,8 @@ then
     else
         printf "\n${BG_GREEN}Proxy kernel (pk) install complete.${NC}\n"
     fi
+else
+    printf "\n${BG_GREEN}Proxy kernel (pk) is already installed.${NC}\n"
 fi
 
 # Save RISC-V paths to a file
@@ -139,8 +154,8 @@ sudo cp /root/.bashrc /root/.bashrc.bak
 
 # source RISC-V paths and utilities from the .bashrc scripts
 sudo printf """
-source RVV_path.sh
-source RVV_cmd.sh""" | sudo tee -a $HOME/.bashrc /root/.bashrc
+source ${PWD}/RVV_path.sh
+source ${PWD}/RVV_cmd.sh""" | sudo tee -a $HOME/.bashrc /root/.bashrc
 
 # Ending message
 if command -v riscv64-unknown-elf-gcc > /dev/null && command -v spike > /dev/null && command -v pk > /dev/null
