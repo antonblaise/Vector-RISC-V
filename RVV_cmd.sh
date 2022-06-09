@@ -3,6 +3,8 @@
 #################################################################
 
 YELLOW='\033[1;33m'
+BLUE='\033[1;34m'
+PURPLE='\033[1;35m'
 WHITE='\033[1;37m'
 NC='\033[0m' # No Color
 
@@ -13,11 +15,36 @@ rvv64-compile(){
     then
         rvv64-help
     else
-        file=$1
+        file=$2
         if [[ -v file ]]
         then
             fileName=${file%.*}
-            $RISCV/gnu/bin/riscv64-unknown-elf-gcc -march=rv64gcv $file -o $fileName.o
+            case "$1" in
+                -v|--vector) # Compile in RISC-V Vector ISA
+                    printf "\n${WHITE}Vector${NC}\n\n"
+                    run_start=$(date +%s%N)
+                    $RISCV/gnu/bin/riscv64-unknown-elf-gcc -march=rv64gcv $file -o $fileName-v.o
+                    run_end=$(date +%s%N)
+                    fileName="${fileName}-v"
+                    printf "\n${WHITE}Elapsed time: ${PURPLE}$(($run_end-$run_start)) nanoseconds${NC}\n\n";;
+                -s|--scalar) # Compile in RISC-V Scalar ISA
+                    printf "\n${WHITE}Scalar${NC}\n\n"
+                    run_start=$(date +%s%N)
+                    $RISCV/gnu/bin/riscv64-unknown-elf-gcc -march=rv64gcv $file -o $fileName-s.o
+                    run_end=$(date +%s%N)
+                    fileName="${fileName}-s"
+                    printf "\n${WHITE}Elapsed time: ${PURPLE}$(($run_end-$run_start)) nanoseconds${NC}\n\n";;
+                --)
+                    break;;
+                *) # Default = Vector
+                    file=$1
+                    fileName=${file%.*}
+                    run_start=$(date +%s%N)
+                    $RISCV/gnu/bin/riscv64-unknown-elf-gcc -march=rv64gcv $file -o $fileName-v.o
+                    run_end=$(date +%s%N)
+                    fileName="${fileName}-v"
+                    printf "\n${WHITE}Elapsed time: ${PURPLE}$(($run_end-$run_start)) nanoseconds${NC}\n\n";;
+            esac
             if [ -f "$fileName.o" ]; then
                 printf "\n${WHITE}>> Output binary generated as ${YELLOW}${fileName}.o${NC}\n\n"
             fi
@@ -32,7 +59,27 @@ rvv64-run(){
     then
         rvv64-help
     else
-        $RISCV/spike/bin/spike --isa=RV64gcv $RISCV/pk/riscv64-unknown-elf/bin/pk $1
+        case "$1" in
+            -v|--vector)
+                printf "\n${WHITE}Vector${NC}\n\n"
+                run_start=$(date +%s%N)
+                $RISCV/spike/bin/spike --isa=RV64gcv $RISCV/pk/riscv64-unknown-elf/bin/pk $2
+                run_end=$(date +%s%N)
+                printf "\n${WHITE}Elapsed time: ${PURPLE}$(($run_end-$run_start)) nanoseconds${NC}\n\n";;
+            -s|--scalar)
+                printf "\n${WHITE}Scalar${NC}\n\n"
+                run_start=$(date +%s%N)
+                $RISCV/spike/bin/spike --isa=RV64gc $RISCV/pk/riscv64-unknown-elf/bin/pk $2
+                run_end=$(date +%s%N)
+                printf "\n${WHITE}Elapsed time: ${PURPLE}$(($run_end-$run_start)) nanoseconds${NC}\n\n";;
+            --)
+                break;;
+            *)
+                run_start=$(date +%s%N)
+                $RISCV/spike/bin/spike --isa=RV64gcv $RISCV/pk/riscv64-unknown-elf/bin/pk $1
+                run_end=$(date +%s%N)
+                printf "\n${WHITE}Elapsed time: ${PURPLE}$(($run_end-$run_start)) nanoseconds${NC}\n\n";;
+        esac
     fi
 }
 
