@@ -60,9 +60,9 @@ then
     ../configure --prefix=$HOME/local/riscv_v/gnu --enable-multilib
     printf "${WHITE}Installing ... "
     make >/dev/null || make
-     > RVV_path.sh
-    printf '\nPATH=$HOME/local/riscv_v/gnu/bin:$PATH' > RVV_path.sh
-    source RVV_path.sh
+     > ../../RVV_path.sh
+    printf '\nPATH=$HOME/local/riscv_v/gnu/bin:$PATH' > ../../RVV_path.sh
+    source ../../RVV_path.sh
     cd ../..
 
     if ! command -v riscv64-unknown-elf-gcc > /dev/null
@@ -94,9 +94,9 @@ then
     printf "${WHITE}Installing ... "
     make > /dev/null || make
     make install > /dev/null || make install
-     > RVV_path.sh
-    printf '\nPATH=$HOME/local/riscv_v/spike/bin:$PATH' > RVV_path.sh
-    source RVV_path.sh
+     > ../../RVV_path.sh
+    printf '\nPATH=$HOME/local/riscv_v/spike/bin:$PATH' > ../../RVV_path.sh
+    source ../../RVV_path.sh
     cd ../..
 
     if ! command -v spike > /dev/null
@@ -126,9 +126,9 @@ then
     ../configure --prefix=$HOME/local/riscv_v/pk --host=riscv64-unknown-elf
     make > /dev/null || make
     make install > /dev/null || make install
-     > RVV_path.sh
-    printf '\nPATH=$HOME/local/riscv_v/pk/riscv64-unknown-elf/bin:$PATH' > RVV_path.sh
-    source RVV_path.sh
+     > ../../RVV_path.sh
+    printf '\nPATH=$HOME/local/riscv_v/pk/riscv64-unknown-elf/bin:$PATH' > ../../RVV_path.sh
+    source ../../RVV_path.sh
     cd ../..
 
     if ! command -v pk > /dev/null
@@ -145,6 +145,7 @@ fi
 # Save RISC-V paths to a file
 printf """
 PATH=$HOME/local/riscv_v/gnu/bin:$HOME/local/riscv_v/spike/bin:$HOME/local/riscv_v/pk/riscv64-unknown-elf/bin:$PATH
+PATH=$(echo $PATH | awk -v RS=: -v ORS=: '!($0 in a) {a[$0]; print}')
 RISCV=$HOME/local/riscv_v
 """ > RVV_path.sh
 
