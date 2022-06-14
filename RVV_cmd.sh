@@ -26,14 +26,14 @@ rvv64-compile(){
                     $RISCV/gnu/bin/riscv64-unknown-elf-gcc -march=rv64gcv $file -o $fileName-v.o
                     run_end=$(date +%s%N)
                     fileName="${fileName}-v"
-                    printf "\n${WHITE}Elapsed time: ${PURPLE}$(($run_end-$run_start)) nanoseconds${NC}\n\n";;
+                    printf "\n${WHITE}Elapsed time: ${PURPLE}$((($run_end-$run_start)/1000000)) ms${NC}\n\n";;
                 -s|--scalar) # Compile in RISC-V Scalar ISA
                     printf "\n${WHITE}Scalar${NC}\n\n"
                     run_start=$(date +%s%N)
-                    $RISCV/gnu/bin/riscv64-unknown-elf-gcc -march=rv64gcv $file -o $fileName-s.o
+                    $RISCV/gnu/bin/riscv64-unknown-elf-gcc -march=rv64gc $file -o $fileName-s.o
                     run_end=$(date +%s%N)
                     fileName="${fileName}-s"
-                    printf "\n${WHITE}Elapsed time: ${PURPLE}$(($run_end-$run_start)) nanoseconds${NC}\n\n";;
+                    printf "\n${WHITE}Elapsed time: ${PURPLE}$((($run_end-$run_start)/1000000)) ms${NC}\n\n";;
                 --)
                     break;;
                 *) # Default = Vector
@@ -43,7 +43,7 @@ rvv64-compile(){
                     $RISCV/gnu/bin/riscv64-unknown-elf-gcc -march=rv64gcv $file -o $fileName-v.o
                     run_end=$(date +%s%N)
                     fileName="${fileName}-v"
-                    printf "\n${WHITE}Elapsed time: ${PURPLE}$(($run_end-$run_start)) nanoseconds${NC}\n\n";;
+                    printf "\n${WHITE}Elapsed time: ${PURPLE}$((($run_end-$run_start)/1000000)) ms${NC}\n\n";;
             esac
             if [ -f "$fileName.o" ]; then
                 printf "\n${WHITE}>> Output binary generated as ${YELLOW}${fileName}.o${NC}\n\n"
@@ -65,20 +65,20 @@ rvv64-run(){
                 run_start=$(date +%s%N)
                 $RISCV/spike/bin/spike --isa=RV64gcv $RISCV/pk/riscv64-unknown-elf/bin/pk $2
                 run_end=$(date +%s%N)
-                printf "\n${WHITE}Elapsed time: ${PURPLE}$(($run_end-$run_start)) nanoseconds${NC}\n\n";;
+                printf "\n${WHITE}Elapsed time: ${PURPLE}$((($run_end-$run_start)/1000000)) ms${NC}\n\n";;
             -s|--scalar)
                 printf "\n${WHITE}Scalar${NC}\n\n"
                 run_start=$(date +%s%N)
                 $RISCV/spike/bin/spike --isa=RV64gc $RISCV/pk/riscv64-unknown-elf/bin/pk $2
                 run_end=$(date +%s%N)
-                printf "\n${WHITE}Elapsed time: ${PURPLE}$(($run_end-$run_start)) nanoseconds${NC}\n\n";;
+                printf "\n${WHITE}Elapsed time: ${PURPLE}$((($run_end-$run_start)/1000000)) ms${NC}\n\n";;
             --)
                 break;;
             *)
                 run_start=$(date +%s%N)
                 $RISCV/spike/bin/spike --isa=RV64gcv $RISCV/pk/riscv64-unknown-elf/bin/pk $1
                 run_end=$(date +%s%N)
-                printf "\n${WHITE}Elapsed time: ${PURPLE}$(($run_end-$run_start)) nanoseconds${NC}\n\n";;
+                printf "\n${WHITE}Elapsed time: ${PURPLE}$((($run_end-$run_start)/1000000)) ms${NC}\n\n";;
         esac
     fi
 }
@@ -113,9 +113,19 @@ ${WHITE}                                    Ha How Ung (2022)${NC}
 
 ${WHITE}                                        Usage:${NC}
 
-rvv64-help\t\t\t\t\t\t- Show this help menu
-rvv64-compile\t<C/RISC-V script>\t\t\t- Compile the C/RISC-V script
-rvv64-run\t<RISC-V binary file>\t\t\t- Run simulation using the compiled RISC-V
-rvv64-link\t<main script> <RISC-V function script>\t- Compile with a main script that calls the function written in RISC-V
+
+${WHITE}rvv64-help\t\t\t\t\t\t- Show this help menu${NC}
+
+${WHITE}rvv64-compile\t<C/RISC-V script>\t\t\t- Compile the C/RISC-V script${NC}
+\t\tdefault\t\t\t\t- Compile as vector ISA
+\t\t-s\t\t\t\t- Compile as scalar ISA
+\t\t-v\t\t\t\t- Compile as vector ISA
+
+${WHITE}rvv64-run\t<RISC-V binary file>\t\t\t- Run simulation using the compiled RISC-V${NC}
+\t\tdefault\t\t\t\t- Run as vector ISA
+\t\t-s\t\t\t\t- Run as scalar ISA
+\t\t-v\t\t\t\t- Run as vector ISA
+
+${WHITE}rvv64-link\t<main script> <RISC-V function script>\t- Compile with a main script that calls the function written in RISC-V${NC}
 """
 }
