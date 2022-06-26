@@ -164,18 +164,32 @@ then
     printf """
 
 
-${GREEN}                        INSTALLATION COMPLETE!${NC}
+${YELLOW}                   RISC-V Vector Extension - Compiler and Simulator${NC}
 
-${WHITE}                                Usage:${NC}
+${WHITE}                                    Ha How Ung (2022)${NC}
 
-rvv64-help\t\t\t\t\t\t- Show this help menu
-rvv64-compile\t<C/RISC-V script>\t\t\t- Compile the C/RISC-V script
-rvv64-run\t<RISC-V binary file>\t\t\t- Run simulation using the compiled RISC-V
-rvv64-link\t<main script> <RISC-V function script>\t- Compile with a main script that calls the function written in RISC-V
+${WHITE}                                        Usage:${NC}
+
+
+${WHITE}rvv64-help\t\t\t\t\t\t- Show this help menu${NC}
+
+${WHITE}rvv64-compile\t<C/RISC-V script>\t\t\t- Compile the C/RISC-V script${NC}
+\t\tdefault\t\t\t\t- Compile as vector ISA
+\t\t-s\t\t\t\t- Compile as scalar ISA
+\t\t-v\t\t\t\t- Compile as vector ISA
+
+${WHITE}rvv64-run\t<RISC-V binary file>\t\t\t- Run simulation using the compiled RISC-V${NC}
+\t\tdefault\t\t\t\t- Run as vector ISA
+\t\t-s\t\t\t\t- Run as scalar ISA
+\t\t-v\t\t\t\t- Run as vector ISA
+
+${WHITE}rvv64-link\t<main script> <RISC-V function script>\t- Compile with a main script that calls the function written in RISC-V${NC}
+
 """
 else
     printf """
 ${RED}Installation incomplete. Something went wrong.${NC}
+
 """
 fi
 
